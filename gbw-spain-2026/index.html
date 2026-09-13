@@ -1,0 +1,1121 @@
+<title>Barcelona to Madrid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..700&display=swap">
+
+<style>
+/* ========== tokens ========== */
+:root{
+  --paper:#FAFAF8;
+  --sunk:#F1F2EE;
+  --raise:#FFFFFF;
+  --rule:#DEDFD9;
+  --rule-soft:#E9EAE5;
+  --ink:#16181A;
+  --ink-2:#4E555A;
+  --ink-3:#838A8F;
+
+  --bcn:#00696B;
+  --pen:#856618;
+  --mad:#A32032;
+  --bcn-wash:rgba(0,105,107,.09);
+  --pen-wash:rgba(133,102,24,.10);
+  --mad-wash:rgba(163,32,50,.09);
+
+  --accent:var(--bcn);
+  --wash:var(--bcn-wash);
+
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Newsreader",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+
+  --maxw:1000px;
+  --col:69ch;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#101214;
+    --sunk:#171A1D;
+    --raise:#1B1F22;
+    --rule:#2A2F33;
+    --rule-soft:#22262A;
+    --ink:#E9E8E3;
+    --ink-2:#A5ABAF;
+    --ink-3:#767D82;
+    --bcn:#41B4B3;
+    --pen:#D6AB4E;
+    --mad:#E76B78;
+    --bcn-wash:rgba(65,180,179,.13);
+    --pen-wash:rgba(214,171,78,.13);
+    --mad-wash:rgba(231,107,120,.13);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#101214;
+  --sunk:#171A1D;
+  --raise:#1B1F22;
+  --rule:#2A2F33;
+  --rule-soft:#22262A;
+  --ink:#E9E8E3;
+  --ink-2:#A5ABAF;
+  --ink-3:#767D82;
+  --bcn:#41B4B3;
+  --pen:#D6AB4E;
+  --mad:#E76B78;
+  --bcn-wash:rgba(65,180,179,.13);
+  --pen-wash:rgba(214,171,78,.13);
+  --mad-wash:rgba(231,107,120,.13);
+}
+
+[data-city="barcelona"]{--accent:var(--bcn);--wash:var(--bcn-wash);}
+[data-city="penedes"]{--accent:var(--pen);--wash:var(--pen-wash);}
+[data-city="madrid"]{--accent:var(--mad);--wash:var(--mad-wash);}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:0 72px;
+}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
+h1,h2,h3{text-wrap:balance;margin:0;}
+p{margin:0;}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;}
+
+.eyebrow{
+  font-family:var(--f-mono);
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  font-weight:500;
+}
+
+/* ========== masthead ========== */
+.mast{padding-block:38px 26px;border-bottom:1px solid var(--rule);}
+.mast h1{
+  font-family:var(--f-display);
+  font-variation-settings:"wdth" 112,"wght" 780;
+  font-size:clamp(38px,8.2vw,74px);
+  line-height:.92;
+  letter-spacing:-.022em;
+  text-transform:uppercase;
+  margin-block:14px 0;
+}
+.mast h1 .via{display:block;color:var(--ink-3);font-variation-settings:"wdth" 92,"wght" 300;font-size:.38em;letter-spacing:.005em;line-height:1.3;margin-top:14px;text-transform:none;font-style:italic;}
+.deck{
+  margin-top:18px;
+  max-width:60ch;
+  color:var(--ink-2);
+  font-size:18px;
+}
+.mastmeta{
+  display:flex;flex-wrap:wrap;gap:6px 26px;
+  margin-top:22px;
+  font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;
+  color:var(--ink-3);text-transform:uppercase;
+}
+.mastmeta b{color:var(--ink-2);font-weight:500;}
+
+/* ========== live board ========== */
+.board{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;
+  margin-top:0;padding-block:14px;
+  border-bottom:1px solid var(--rule);
+  font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.board .clock{
+  color:var(--ink);font-weight:600;font-size:13px;letter-spacing:.04em;
+  font-variant-numeric:tabular-nums;
+}
+.board .pulse{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--accent);margin-right:8px;vertical-align:.12em;
+  animation:beat 2.4s ease-in-out infinite;
+}
+@keyframes beat{0%,100%{opacity:1}50%{opacity:.25}}
+.board .nx{color:var(--ink-2);}
+.board .nx b{color:var(--accent);font-weight:600;}
+
+/* ========== day rail ========== */
+.railwrap{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--rule);}
+.railscroll{overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch;}
+.rail{
+  display:flex;min-width:640px;
+  padding-block:20px 16px;
+  scroll-snap-type:x mandatory;
+}
+.day{
+  flex:1 1 0;position:relative;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  padding-top:22px;
+  scroll-snap-align:center;
+  text-align:center;
+  color:var(--ink-3);
+  transition:color .18s ease;
+}
+/* the journey line: each half-segment tinted by its own day's city */
+.day::before,.day::after{
+  content:"";position:absolute;top:6px;height:2px;
+  background:var(--seg,var(--rule));
+}
+.day::before{left:0;right:50%;}
+.day::after{left:50%;right:0;}
+.day:first-child::before,.day:last-child::after{background:transparent;}
+.day .dot{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:13px;height:13px;border-radius:50%;
+  background:var(--paper);border:2px solid var(--seg,var(--rule));
+  transition:all .18s ease;
+}
+.day .dow{
+  font-family:var(--f-display);
+  font-variation-settings:"wdth" 118,"wght" 700;
+  text-transform:uppercase;font-size:13px;letter-spacing:.06em;
+}
+.day .dnum{
+  font-family:var(--f-mono);font-size:26px;font-weight:400;line-height:1.1;
+  font-variant-numeric:tabular-nums;color:var(--ink-2);
+}
+.day .dcity{
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:2px;
+}
+.day[aria-selected="true"]{color:var(--ink);}
+.day[aria-selected="true"] .dot{background:var(--seg);border-color:var(--seg);transform:translateX(-50%) scale(1.25);}
+.day[aria-selected="true"] .dnum{color:var(--ink);font-weight:500;}
+.day[aria-selected="true"] .dcity{color:var(--seg);}
+.day:hover .dnum{color:var(--ink);}
+.day.istoday .dow::after{
+  content:"";display:inline-block;width:4px;height:4px;border-radius:50%;
+  background:var(--seg);margin-left:5px;vertical-align:.3em;
+}
+/* the train leg is drawn as a dashed crossing */
+.day.trainout::after,.day.trainin::before{
+  background:repeating-linear-gradient(90deg,var(--seg) 0 5px,transparent 5px 10px);
+}
+
+/* ========== view switch ========== */
+.switch{
+  display:flex;gap:2px;margin-block:26px 0;
+  border-bottom:1px solid var(--rule);
+}
+.switch button{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  padding:10px 16px;color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px;
+}
+.switch button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--accent);}
+
+/* ========== day head ========== */
+.dayhead{padding-block:34px 0;}
+.dayhead .kicker{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);font-weight:500;
+}
+.dayhead h2{
+  font-family:var(--f-display);
+  font-variation-settings:"wdth" 108,"wght" 720;
+  font-size:clamp(30px,5.6vw,46px);line-height:1;letter-spacing:-.02em;
+  text-transform:uppercase;margin-top:10px;
+}
+.dayhead .theme{margin-top:14px;max-width:var(--col);font-size:19px;color:var(--ink-2);font-style:italic;}
+.facts{
+  display:flex;flex-wrap:wrap;gap:0;margin-top:22px;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.facts div{
+  flex:1 1 120px;padding:12px 18px 12px 0;
+}
+.facts dt{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);
+}
+.facts dd{
+  margin:3px 0 0;font-family:var(--f-display);
+  font-variation-settings:"wdth" 100,"wght" 620;
+  font-size:16px;letter-spacing:-.005em;
+}
+
+/* ========== controls ========== */
+.controls{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  margin-top:22px;
+}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  padding:6px 12px;border:1px solid var(--rule);border-radius:100px;color:var(--ink-3);
+  transition:border-color .15s ease,color .15s ease,background .15s ease;
+}
+.chip:hover{color:var(--ink-2);border-color:var(--ink-3);}
+.chip[aria-pressed="true"]{color:var(--ink);border-color:var(--accent);background:var(--wash);}
+.chip svg{width:9px;height:9px;flex:none;}
+.spacer{flex:1 1 auto;}
+.plain{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-3);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;
+}
+.plain:hover{color:var(--accent);}
+
+/* ========== timeline ========== */
+.tl{list-style:none;margin:28px 0 0;padding:0;}
+.ev{
+  display:grid;
+  grid-template-columns:62px 1fr;
+  column-gap:30px;
+  position:relative;
+}
+.ev .gut{
+  position:relative;
+  padding-top:19px;
+  text-align:right;
+}
+/* continuous track */
+.ev .gut::after{
+  content:"";position:absolute;right:-15px;top:0;bottom:0;width:1px;background:var(--rule-soft);
+}
+.ev:first-child .gut::after{top:15px;}
+.ev:last-child .gut::after{bottom:auto;height:22px;}
+.ev .time{
+  font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums;
+  color:var(--ink-2);letter-spacing:-.01em;line-height:1.15;display:block;
+}
+.ev .mark{
+  position:absolute;right:-20px;top:18px;width:11px;height:11px;
+  background:var(--paper);color:var(--ink-3);
+  display:flex;align-items:center;justify-content:center;
+}
+.ev .mark svg{width:9px;height:9px;}
+.ev .bd{padding:14px 0 16px;border-bottom:1px solid var(--rule-soft);}
+.ev:last-child .bd{border-bottom:0;}
+.ev h3{
+  font-family:var(--f-display);
+  font-variation-settings:"wdth" 102,"wght" 600;
+  font-size:17.5px;line-height:1.28;letter-spacing:-.008em;
+}
+.ev .who{margin-top:6px;font-size:16px;color:var(--ink-2);}
+.ev .who b{font-weight:600;color:var(--ink);}
+.ev .who em{font-style:normal;color:var(--ink-3);}
+.ev .room{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:7px;
+}
+.ev .note{
+  margin-top:9px;max-width:var(--col);font-size:16px;color:var(--ink-2);
+  border-left:2px solid var(--wash);padding-left:14px;
+}
+.ev.session h3{font-variation-settings:"wdth" 104,"wght" 680;font-size:19px;}
+.ev.logistics h3,.ev.move h3{font-variation-settings:"wdth" 98,"wght" 450;font-size:16px;color:var(--ink-2);}
+.ev.past{opacity:.42;}
+.ev.now .bd{background:var(--wash);margin-left:-14px;padding-left:14px;padding-right:14px;border-radius:3px;}
+.ev.now .mark{color:var(--accent);}
+.ev.now .time{color:var(--accent);font-weight:600;}
+.nowtag{
+  display:inline-block;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);
+  border-radius:100px;padding:1px 7px;margin-bottom:7px;
+}
+
+/* place disclosure */
+.openplace{
+  display:inline-flex;align-items:center;gap:8px;margin-top:11px;
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--accent);
+}
+.openplace .car{display:inline-block;transition:transform .2s ease;font-size:9px;}
+.openplace[aria-expanded="true"] .car{transform:rotate(90deg);}
+.label{
+  margin-top:14px;max-width:var(--col);
+  background:var(--sunk);border-left:2px solid var(--accent);
+  padding:18px 20px;border-radius:0 3px 3px 0;
+}
+.label .pname{
+  font-family:var(--f-display);font-variation-settings:"wdth" 100,"wght" 660;
+  font-size:16px;letter-spacing:-.005em;
+}
+.label .pmeta{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-3);
+  line-height:1.7;
+}
+.label h4{
+  margin:15px 0 0;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500;
+}
+.label p{margin-top:6px;font-size:16.5px;color:var(--ink-2);}
+.label .fun{font-style:italic;color:var(--ink);}
+.maplink{
+  display:inline-flex;align-items:center;gap:7px;margin-top:16px;
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);text-decoration:none;
+  border:1px solid var(--accent);border-radius:100px;padding:6px 13px;
+  transition:background .15s ease;
+}
+.maplink:hover{background:var(--wash);}
+.maplink svg{width:11px;height:11px;}
+
+/* NOW divider */
+.nowline{
+  display:grid;grid-template-columns:62px 1fr;column-gap:30px;align-items:center;
+  margin:2px 0;
+}
+.nowline .t{
+  font-family:var(--f-mono);font-size:11px;text-align:right;color:var(--accent);font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
+.nowline .l{height:1px;background:var(--accent);position:relative;}
+.nowline .l::before{
+  content:"";position:absolute;left:-18px;top:-3px;width:7px;height:7px;border-radius:50%;background:var(--accent);
+}
+.nowline .l::after{
+  content:"NOW";position:absolute;right:0;top:-8px;background:var(--paper);padding-left:8px;
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.18em;color:var(--accent);
+}
+
+/* ========== extras ========== */
+.extras{
+  margin-top:40px;padding-top:26px;border-top:1px solid var(--rule);
+}
+.extras .hd{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+}
+.extras h3{
+  font-family:var(--f-display);font-variation-settings:"wdth" 104,"wght" 680;
+  font-size:22px;margin-top:8px;text-transform:uppercase;letter-spacing:-.01em;
+}
+.extras > p{margin-top:10px;max-width:var(--col);color:var(--ink-2);font-style:italic;}
+.picks{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:0;}
+.picks li{padding:15px 0;border-top:1px solid var(--rule-soft);display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;}
+.picks .pk{font-family:var(--f-display);font-variation-settings:"wdth" 100,"wght" 640;font-size:16px;}
+.picks .ps{flex:1 1 260px;color:var(--ink-2);font-size:16px;}
+.picks a{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+  text-decoration:none;white-space:nowrap;
+}
+.picks a:hover{text-decoration:underline;text-underline-offset:3px;}
+
+/* ========== places view ========== */
+.places{margin-top:30px;}
+.pcard{
+  padding:30px 0;border-top:1px solid var(--rule);
+  display:grid;grid-template-columns:minmax(0,1fr);gap:0;
+}
+.pcard .ptop{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;}
+.pcard .idx{
+  font-family:var(--f-mono);font-size:11px;color:var(--ink-3);letter-spacing:.1em;
+  font-variant-numeric:tabular-nums;
+}
+.pcard h3{
+  font-family:var(--f-display);font-variation-settings:"wdth" 106,"wght" 700;
+  font-size:clamp(21px,3.6vw,28px);line-height:1.1;letter-spacing:-.015em;text-transform:uppercase;
+}
+.pcard .tagrow{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+}
+.pcard .tag{border:1px solid var(--rule);border-radius:100px;padding:4px 10px;color:var(--ink-3);}
+.pcard .tag.city{border-color:var(--accent);color:var(--accent);}
+.pcard .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px 36px;margin-top:20px;}
+.pcard h4{
+  margin:0;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;
+}
+.pcard p{margin-top:7px;color:var(--ink-2);font-size:16.5px;}
+.pcard .fun{font-style:italic;color:var(--ink);}
+.pcard .addr{font-family:var(--f-mono);font-size:11px;color:var(--ink-3);line-height:1.7;margin-top:10px;}
+
+/* ========== footer ========== */
+.notes{margin-top:56px;padding-top:30px;border-top:2px solid var(--ink);}
+.ncols{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:28px 36px;}
+.nblock h4{
+  margin:0;font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;
+}
+.nblock p{margin-top:8px;font-size:16px;color:var(--ink-2);}
+.nblock a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--wash);}
+.nblock a:hover{border-bottom-color:var(--accent);}
+.caveat{
+  margin-top:34px;padding:16px 18px;background:var(--sunk);border-radius:3px;
+  font-size:15.5px;color:var(--ink-2);max-width:var(--col);
+}
+.caveat b{color:var(--ink);font-weight:600;}
+.colophon{
+  margin-top:26px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+
+@media (max-width:640px){
+  body{font-size:16px;}
+  .ev{grid-template-columns:46px 1fr;column-gap:24px;}
+  .ev .mark{right:-17px;}
+  .ev .gut::after{right:-12px;}
+  .nowline{grid-template-columns:46px 1fr;column-gap:24px;}
+  .nowline .l::before{left:-15px;}
+  .pcard .cols{grid-template-columns:1fr;gap:20px;}
+  .label{padding:15px 16px;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important;}
+}
+
+@media print{
+  .railwrap,.switch,.controls,.board{display:none !important;}
+  .label{display:block !important;}
+  body{font-size:11pt;}
+  .ev.past{opacity:1;}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="m-session" viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" fill="currentColor"/></symbol>
+  <symbol id="m-visit" viewBox="0 0 10 10"><path d="M5 .8 9.2 5 5 9.2.8 5Z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+  <symbol id="m-meal" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="currentColor"/></symbol>
+  <symbol id="m-move" viewBox="0 0 10 10"><path d="M2.5 1 7 5l-4.5 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="m-free" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.4" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+  <symbol id="m-logistics" viewBox="0 0 10 10"><rect x="1" y="4.2" width="8" height="1.6" fill="currentColor"/></symbol>
+  <symbol id="m-pin" viewBox="0 0 12 12"><path d="M6 .9c-2 0-3.6 1.6-3.6 3.6C2.4 7.3 6 11.1 6 11.1S9.6 7.3 9.6 4.5C9.6 2.5 8 .9 6 .9Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="4.4" r="1.2" fill="currentColor"/></symbol>
+</svg>
+
+<div class="wrap" id="app" data-city="barcelona">
+
+  <header class="mast">
+    <div class="eyebrow">The Wharton School &nbsp;·&nbsp; MBA for Executives &nbsp;·&nbsp; Global Business Week</div>
+    <h1>Barcelona<br>to Madrid
+      <span class="via">Competitive Advantage in the Leisure Industries: Spain</span>
+    </h1>
+    <p class="deck">Six days inside the world&rsquo;s most competitive leisure economy &mdash; congress halls and cava cellars, a Formula&nbsp;1 circuit, two member-owned football clubs, a golden triangle of museums, and the airport that moves more passengers than any operator on earth.</p>
+    <div class="mastmeta">
+      <span><b>13&ndash;18 Sep 2026</b></span>
+      <span>Faculty: <b>Martine Haas</b> &nbsp;·&nbsp; <b>Mireia Lizandra</b></span>
+      <span>TA: <b>Aimee La France</b></span>
+      <span><b>9</b> class sessions &nbsp;·&nbsp; <b>17</b> speakers</span>
+    </div>
+  </header>
+
+  <div class="board" id="board" role="status" aria-live="polite"></div>
+
+  <div class="railwrap">
+    <div class="railscroll">
+      <nav class="rail" id="rail" role="tablist" aria-label="Days of the trip"></nav>
+    </div>
+  </div>
+
+  <div class="switch" role="group" aria-label="View">
+    <button id="v-day" aria-pressed="true">Itinerary</button>
+    <button id="v-places" aria-pressed="false">Places &amp; Stories</button>
+  </div>
+
+  <main id="stage"></main>
+
+  <footer class="notes">
+    <div class="ncols">
+      <div class="nblock">
+        <h4>Barcelona &mdash; nights 1&ndash;2</h4>
+        <p>Hotel Catalonia Boulevard<br>
+        Carrer del Rossell&oacute; 249, Eixample<br>
+        <a href="tel:+34934159911">+34 934 15 99 11</a><br>
+        <span style="color:var(--ink-3)">Formerly the Gallery Hotel</span></p>
+      </div>
+      <div class="nblock">
+        <h4>Madrid &mdash; nights 3&ndash;5</h4>
+        <p>VP Plaza Espa&ntilde;a Design<br>
+        Plaza de Espa&ntilde;a 5, Centro<br>
+        <a href="tel:+34915955510">+34 915 95 55 10</a><br>
+        <span style="color:var(--ink-3)">Rooms ready on late arrival &mdash; card for incidentals only</span></p>
+      </div>
+      <div class="nblock">
+        <h4>Dress code</h4>
+        <p>No flip-flops, shorts, or t-shirts. Otherwise, anything goes. Bring sensible shoes for walking and vineyards. <b style="color:var(--ink)">No jackets, suits, or ties needed.</b></p>
+      </div>
+      <div class="nblock">
+        <h4>Course site</h4>
+        <p><a href="https://canvas.upenn.edu/courses/1937089" target="_blank" rel="noopener noreferrer">Canvas &mdash; course 1937089</a><br>
+        <span style="color:var(--ink-3)">Readings live under Course Materials @ Penn Libraries</span></p>
+      </div>
+      <div class="nblock">
+        <h4>Deadlines</h4>
+        <p>Group reflection paper &mdash; <b style="color:var(--ink)">22 Sep, 5:00 pm EST</b><br>
+        Final individual paper &mdash; <b style="color:var(--ink)">12 Oct, 5:00 pm EST</b></p>
+      </div>
+      <div class="nblock">
+        <h4>Attendance</h4>
+        <p>All sessions, meals, and activities are mandatory. Arrive on time, stay for the whole session, and no phones during guest speakers.</p>
+      </div>
+    </div>
+
+    <div class="caveat">
+      <b>This schedule is preliminary and subject to change.</b> The syllabus is updated daily &mdash; always check Canvas for the current version before you plan your morning. Historical notes and fun facts here are background colour added for the trip, not part of the course materials.
+    </div>
+
+    <div class="colophon">
+      Use &larr; &rarr; to move between days &nbsp;·&nbsp; Built from the GBW Spain 2026 syllabus
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   PLACES — the venues, with a short history and a fun fact
+   ============================================================ */
+const P = {
+  hotelbcn:{
+    name:"Hotel Catalonia Boulevard",
+    q:"Hotel Catalonia Boulevard, Carrer del Rossello 249, Barcelona",
+    addr:"Carrer del Rosselló 249, Eixample, 08008 Barcelona",
+    era:"Eixample district · Cerdà grid, 1860",
+    city:"barcelona",
+    hist:"You are sleeping inside a piece of urban-planning history. When Barcelona tore down its medieval walls, engineer Ildefons Cerdà drew the Eixample — a grid of near-identical blocks with chamfered corners so light, air and traffic could all turn freely. He justified it with his own mortality survey of the cramped old city, making it one of the first city plans argued from data rather than taste.",
+    fun:"Walk one block and you are at Gaudí's La Pedrera; walk ten minutes down Passeig de Gràcia and you hit the Illa de la Discòrdia, where Gaudí, Puig i Cadafalch and Domènech i Montaner each built a house side by side and let the neighbours judge."
+  },
+  mnac:{
+    name:"MNAC — Museu Nacional d'Art de Catalunya",
+    q:"Museu Nacional d'Art de Catalunya, Palau Nacional, Barcelona",
+    addr:"Palau Nacional, Parc de Montjuïc, 08038 Barcelona",
+    era:"Palau Nacional, built 1929",
+    city:"barcelona",
+    hist:"The Palau Nacional was thrown up as the centrepiece of the 1929 Barcelona International Exposition and never came down. Its greatest holding came from a rescue mission: in the 1920s, alarmed that Romanesque frescoes were being stripped from remote Pyrenean churches and sold abroad, Catalan scholars hired Italian technicians to peel the paintings off the apse walls onto canvas and bring them down the mountains. The result is the finest collection of Romanesque mural painting anywhere.",
+    fun:"That same 1929 Expo produced Mies van der Rohe's German Pavilion a few hundred metres downhill — and with it the Barcelona Chair, still in production almost a century later. One world's fair, two permanent exports."
+  },
+  inef:{
+    name:"INEF — Institut Nacional d'Educació Física de Catalunya",
+    q:"INEFC Barcelona, Avinguda de l'Estadi, Montjuic, Barcelona",
+    addr:"Av. de l'Estadi 12–22, Anella Olímpica, Montjuïc",
+    era:"Ricardo Bofill, 1991 · Olympic Ring",
+    city:"barcelona",
+    hist:"Ricardo Bofill's colonnaded courtyards were finished in 1991 as part of the Anella Olímpica — the Olympic Ring assembled on Montjuïc for Barcelona '92, alongside the rebuilt Estadi Olímpic and Arata Isozaki's Palau Sant Jordi. It is a sports school that looks like a Roman forum, which is very much the point.",
+    fun:"Barcelona '92 is the founding case study in event-led urban regeneration: the city used the Games to turn itself around to face the sea, replacing rail yards and factories with the Port Olímpic and four kilometres of new beach. The opening ceremony's flaming arrow got the headlines; the beach was the real legacy."
+  },
+  campnou:{
+    name:"Spotify Camp Nou",
+    q:"Spotify Camp Nou, Barcelona",
+    addr:"C. d'Arístides Maillol 12, Les Corts, 08028 Barcelona",
+    era:"Opened 1957 · rebuilt 2023–",
+    city:"barcelona",
+    hist:"FC Barcelona outgrew its old ground at Les Corts and opened this one in 1957. For decades the club called it simply the Estadi; members voted to make the nickname Camp Nou — 'new field' — the official name in 2001. It has been Europe's largest stadium for most of its life and is currently mid-rebuild under the Espai Barça project.",
+    fun:"Barça has no owner to sell it. It belongs to its socis, who elect the president — which is what 'més que un club', more than a club, was originally getting at. When Spotify bought the naming rights in 2022, it was the first time in the club's history that the stadium carried a sponsor's name at all."
+  },
+  circuit:{
+    name:"Circuit de Barcelona-Catalunya",
+    q:"Circuit de Barcelona-Catalunya, Montmelo",
+    addr:"Montmeló, ~30 km north of Barcelona",
+    era:"Opened 1991",
+    city:"barcelona",
+    hist:"Built in Montmeló in the run-up to the 1992 Games, the circuit has hosted the Formula 1 Spanish Grand Prix and the MotoGP Gran Premi de Catalunya ever since. Two race weekends a year turn a suburban industrial town into an international media venue.",
+    fun:"Because its lap mixes long straights, high-speed sweepers and slow corners, F1 teams historically treated it as the sport's benchmark test track — if a car works here, it works everywhere. Engineers know its corner numbers better than most drivers know their own street."
+  },
+  vint24:{
+    name:"Bar Vint-i-Quatre",
+    q:"Bar Vint-i-Quatre, Barcelona",
+    addr:"Barcelona — walking distance from the hotel",
+    era:"Carles Abellan · elBulli lineage",
+    city:"barcelona",
+    hist:"Vint-i-quatre is Catalan for twenty-four — a nod to Tapas 24, the counter that made Carles Abellan's name. Abellan cooked under Ferran Adrià at elBulli before going out on his own with the idea that avant-garde technique should be pointed at the humblest food on the menu: the sandwich, the croquette, the tinned seafood.",
+    fun:"elBulli closed in 2011 at the absolute peak of its fame, holding three Michelin stars and reportedly fielding around two million reservation requests a year for roughly eight thousand seats. Abellan's most famous dish is a descendant of that era: a pressed ham-and-cheese 'bikini' upgraded with Ibérico and truffle."
+  },
+  gramona:{
+    name:"Gramona — Sant Sadurní d'Anoia",
+    q:"Gramona, Sant Sadurni d'Anoia, Penedes",
+    addr:"Sant Sadurní d'Anoia, Alt Penedès, Catalonia",
+    era:"Founded 1881 · five generations",
+    city:"penedes",
+    hist:"Sant Sadurní d'Anoia is the town that makes the overwhelming majority of Spain's cava, and Gramona has been part of it since 1881. The whole industry traces to the 1870s, when a Sant Sadurní grower returned from Champagne and made the first Spanish sparkling wine by the traditional bottle-fermented method — then phylloxera killed the region's red vines and pushed Penedès decisively toward white grapes.",
+    fun:"In 2019 Gramona and a handful of other top estates walked out of the Cava appellation entirely to found Corpinnat, a mark that demands organic estate-grown fruit, hand harvesting and long ageing. It is a textbook live case: what premium producers do when a mass-market appellation stops signalling quality."
+  },
+  sants:{
+    name:"Barcelona Sants + the Iryo to Madrid",
+    q:"Barcelona Sants railway station",
+    addr:"Plaça dels Països Catalans, 08014 Barcelona",
+    era:"Spain's high-speed spine",
+    city:"penedes",
+    hist:"The Madrid–Barcelona high-speed line opened in 2008 and rewired one of the busiest air corridors in the world; rail took the majority of the market within a few years. In 2021 Spain became the first country in Europe to throw its domestic high-speed network fully open to competition. Iryo — backed by Trenitalia and running Frecciarossa 1000 trainsets — launched into that opening in 2022.",
+    fun:"Spain has the longest high-speed rail network in Europe and the second longest on earth, behind only China. When three operators started fighting over the same Madrid–Barcelona tracks, fares fell sharply and ridership jumped — deregulation you can measure from your seat."
+  },
+  hotelmad:{
+    name:"VP Plaza España Design",
+    q:"VP Plaza Espana Design Hotel, Plaza de Espana 5, Madrid",
+    addr:"Plaza de España 5, Centro, 28008 Madrid",
+    era:"Plaza rebuilt 2021",
+    city:"madrid",
+    hist:"Plaza de España sits at the head of the Gran Vía, hemmed in by the Edificio España (1953) and the Torre de Madrid (1957) — both briefly among the tallest buildings in the world, and both monuments to Franco-era ambition in reinforced concrete. The square itself was torn up and rebuilt as a pedestrian park in 2021, burying the traffic and stitching it to the Sabatini Gardens.",
+    fun:"At its centre stands the 1929 monument to Cervantes, with Don Quixote and Sancho Panza cast in bronze below him. And Madrid sits at roughly 650 metres — the highest capital city in the European Union, which is why the light is so hard and the nights get cold so fast."
+  },
+  thyssen:{
+    name:"Museo Nacional Thyssen-Bornemisza",
+    q:"Museo Nacional Thyssen-Bornemisza, Paseo del Prado 8, Madrid",
+    addr:"Paseo del Prado 8, 28014 Madrid",
+    era:"Palacio de Villahermosa · acquired 1993",
+    city:"madrid",
+    hist:"Two generations of the Thyssen-Bornemisza family assembled what became the largest private art collection in the world after the British Royal Collection. When the baron went looking for a permanent home in the late 1980s, Britain, Switzerland, Japan and the Getty all competed for it — and Spain won, helped considerably by his Spanish wife. The state leased it, then bought it outright in 1993 for a sum widely regarded since as a steal.",
+    fun:"It completes Madrid's Golden Triangle of Art with the Prado and the Reina Sofía, and it was designed to fill their gaps: Italian primitives, Dutch masters, German Expressionism, American Pop. UNESCO listed the whole Paseo del Prado and Retiro ensemble as a World Heritage Site in 2021."
+  },
+  bernabeu:{
+    name:"Estadio Santiago Bernabéu",
+    q:"Estadio Santiago Bernabeu, Madrid",
+    addr:"Av. de Concha Espina 1, Chamartín, 28036 Madrid",
+    era:"Opened 1947 · reborn 2023–25",
+    city:"madrid",
+    hist:"Opened in 1947 as the Nuevo Estadio Chamartín and renamed in 1955 for Santiago Bernabéu — who played for Real Madrid, then coached it, then ran it as president for 35 years, and who pushed hard for the creation of the European Cup. Like Barça, Real Madrid is owned by its members rather than an investor.",
+    fun:"The billion-euro-plus renovation was designed to solve a business problem, not a football one: a stadium used forty days a year is dead capital. So the pitch now slides into an underground chamber with its own lighting and ventilation, clearing the bowl for concerts and events — a football ground rebuilt as a 365-day venue."
+  },
+  oriente:{
+    name:"Café de Oriente",
+    q:"Cafe de Oriente, Plaza de Oriente 2, Madrid",
+    addr:"Plaza de Oriente 2, 28013 Madrid",
+    era:"On a 17th-century convent",
+    city:"madrid",
+    hist:"The café faces the Royal Palace across Plaza de Oriente and stands on the site of the old Convento de San Gil; its cellars are the convent's. It opened in 1983 under Padre Lezama, a priest who ran restaurants to fund work with ex-offenders — which is why one of Madrid's most photogenic terraces began life as a social enterprise.",
+    fun:"The square in front of you exists because Joseph Bonaparte demolished an entire medieval quarter to make it. Madrileños repaid him with the nickname 'el Rey Plazuelas' — the King of Little Squares. Behind it, the Royal Palace is the largest functioning royal palace in Western Europe, with well over three thousand rooms."
+  }
+};
+
+/* ============================================================
+   DAYS
+   ============================================================ */
+const DAYS = [
+ {id:"sun",dow:"Sunday",num:"13",city:"barcelona",label:"Barcelona",
+  title:"Arrival",
+  theme:"Drop the bags, meet the cohort, and hear the argument the whole week is built to test: that leisure is not a soft industry but a fifth of the economy.",
+  ev:[
+   {t:"16:00",k:"logistics",ti:"Hotel check-in opens",pl:"hotelbcn"},
+   {t:"17:00",k:"meal",ti:"Coffee available"},
+   {t:"17:30",k:"session",ti:"Class Session 1 — Welcome",who:[["Prof. Martine Haas","Vice Dean for Global Initiatives, Wharton"],["Dr. Mireia Lizandra","Sports management & Olympic movement"]],rm:"Level A, Crillon-Robert Room · at the hotel",
+    note:"The framing session. Travel, hospitality, sport, entertainment, media and gastronomy together account for roughly a fifth of most national economies — and Spain has built more competitive advantage in them than almost anywhere."},
+   {t:"18:30",k:"meal",ti:"Cocktail dinner — Rooftop Event Bar",rm:"Partners welcome",
+    note:"Your first view over the Eixample roofline. Look north-east along Carrer del Rosselló and the Sagrada Família towers should be showing above the blocks."},
+   {t:"21:00",k:"logistics",ti:"End of dinner"}
+  ]},
+
+ {id:"mon",dow:"Monday",num:"14",city:"barcelona",label:"Barcelona",
+  title:"The City as a Product",
+  theme:"A full day on Montjuïc and beyond: how a city sells itself to congresses, how a Grand Prix becomes an economic instrument, and how tapas became an export.",
+  ev:[
+   {t:"07:00",k:"meal",ti:"Breakfast in the restaurant",rm:"Included"},
+   {t:"07:45",k:"move",ti:"Meet in the lobby — sharp — for the bus to MNAC",rm:"7:45 am means 7:45 am"},
+   {t:"08:30",k:"meal",ti:"Welcome coffee at MNAC",pl:"mnac"},
+   {t:"09:00",k:"session",ti:"Class Session 2 — Barcelona's economic promotion machine",who:[["Mario Rubert","Director of International Economic Promotion, Barcelona Activa (Barcelona City Council)"]],pl:"mnac",
+    note:"Barcelona Activa is the City Council's economic development arm, born in 1986 out of the collapse of industrial Poblenou — the neighbourhood later rebranded 22@ and turned into an innovation district. Few cities have run the playbook this deliberately."},
+   {t:"10:15",k:"meal",ti:"Coffee break"},
+   {t:"10:30",k:"session",ti:"Class Session 2 (cont.) — Business Tourism: Travel versus MICE",who:[["Maite Audet","Lecturer, University of Barcelona"]],
+    note:"MICE — Meetings, Incentives, Conferences, Exhibitions — is the high-margin half of tourism: it fills hotels midweek, out of season, with delegates who spend multiples of a leisure visitor. Barcelona now ranks third in the world for hosting congresses."},
+   {t:"11:45",k:"logistics",ti:"End of presentations"},
+   {t:"12:00",k:"visit",ti:"Private tour of the MNAC",pl:"mnac"},
+   {t:"12:45",k:"logistics",ti:"Group photo"},
+   {t:"13:00",k:"meal",ti:"Lunch in the museum"},
+   {t:"14:30",k:"move",ti:"Walk uphill to INEF (15 min) — or take the bus",rm:"This is the sensible-shoes moment",pl:"inef"},
+   {t:"15:00",k:"session",ti:"Class Session 3 — Sporting events as drivers of the MICE industry: Formula 1 and MotoGP",who:[["Isabel Juárez","Commercial Director, Circuit de Barcelona-Catalunya (part of Fira Barcelona)"]],pl:"circuit",
+    note:"A race weekend is really a three-day trade fair with engines: hospitality suites, sponsor activations, and hotel nights bought a year in advance. Hence a racetrack sitting inside a trade-fair group."},
+   {t:"16:15",k:"session",ti:"Class Session 3 (cont.) — Sports presentation",rm:"Speaker announced at the session"},
+   {t:"17:30",k:"move",ti:"Bus to Spotify Camp Nou",pl:"campnou"},
+   {t:"18:00",k:"visit",ti:"Visit the museum store",pl:"campnou"},
+   {t:"19:00",k:"move",ti:"Bus departs for the hotel"},
+   {t:"19:30",k:"move",ti:"Arrive at the hotel"},
+   {t:"19:45",k:"move",ti:"Walk to Bar Vint-i-Quatre",pl:"vint24"},
+   {t:"20:30",k:"session",ti:"Presentation by Chef Carles Abellan",who:[["Carles Abellan","Top tapas chef; formerly of elBulli under Ferran Adrià"]],rm:"No partners",
+    note:"Spanish gastronomy is a case study in deliberate brand-building: a national cuisine turned into a destination driver through technique, Michelin stars and relentless regional marketing."},
+   {t:"21:00",k:"meal",ti:"Interactive tapas dinner with Chef Abellan",pl:"vint24",
+    note:"Open kitchen — he cooks and plates in front of you, narrating the technique as he goes."},
+   {t:"23:30",k:"logistics",ti:"Return to the hotel"}
+  ]},
+
+ {id:"tue",dow:"Tuesday",num:"15",city:"penedes",label:"BCN → Penedès → Madrid",
+  title:"From the Port to the Vineyard",
+  theme:"Cruise economics in the morning, cava cellars in the afternoon, and a 300 km/h line to Madrid after dark. Bags travel with you — the hotel changes tonight.",
+  ev:[
+   {t:"07:00",k:"meal",ti:"Breakfast in the restaurant",rm:"Included · pack before you come down"},
+   {t:"09:00",k:"session",ti:"Class Session 4 — The cruise business",who:[["Mateo Asensio","Former Cruise Area Director, Barcelona Consortium"]],rm:"Level A, Crillon-Robert Room · at the hotel",
+    note:"Barcelona is Europe's busiest cruise port and its most contested one. The city has been cutting terminals in the old port and pushing ships away from the centre — the sharp end of the overtourism argument in your readings."},
+   {t:"10:30",k:"meal",ti:"Coffee break"},
+   {t:"11:00",k:"move",ti:"Two minibuses depart for Gramona — with luggage",rm:"Check out first",pl:"gramona"},
+   {t:"12:00",k:"meal",ti:"Arrival at Gramona — snack and a glass of rosé",pl:"gramona"},
+   {t:"12:30",k:"visit",ti:"Visit the cellar",pl:"gramona",
+    note:"Underground galleries where bottles rest on their lees for years. The top wines here age far longer than most Champagne."},
+   {t:"13:30",k:"session",ti:"Class Session 5 — Wine tourism as a business",who:[["Miquel Herrero","Head of Hospitality and Wine Tourism, Gramona"]],pl:"gramona",
+    note:"Enotourism turns an agricultural producer into a hospitality brand: the same bottle, sold at the cellar door with a story attached, carries a completely different margin."},
+   {t:"14:30",k:"meal",ti:"Lunch at the winery"},
+   {t:"16:30",k:"visit",ti:"Visit the Gramona vineyards",rm:"Sensible shoes again"},
+   {t:"17:45",k:"move",ti:"Bus departs for Barcelona Sants station",pl:"sants"},
+   {t:"18:30",k:"move",ti:"Partners only — transfer from hotel to station"},
+   {t:"19:40",k:"move",ti:"Iryo high-speed train, Barcelona → Madrid",rm:"Tickets secured for partners too",pl:"sants",
+    note:"Roughly three hours and 620 kilometres. Sit on the right leaving Barcelona for the last of the light over the Penedès you just drove through."},
+   {t:"22:42",k:"move",ti:"Arrive in Madrid"},
+   {t:"23:00",k:"move",ti:"Bus with bags to the hotel",pl:"hotelmad"},
+   {t:"23:30",k:"logistics",ti:"Hotel check-in",rm:"Rooms will be ready — card for incidentals only",pl:"hotelmad"}
+  ]},
+
+ {id:"wed",dow:"Wednesday",num:"16",city:"madrid",label:"Madrid",
+  title:"The Experience Economy",
+  theme:"Madrid's convention machine, a nightclub leveraged buyout, a unicorn that sells candlelit concerts, and a stadium rebuilt to work 365 days a year. Then the evening is yours.",
+  ev:[
+   {t:"07:00",k:"meal",ti:"Breakfast in the restaurant",rm:"Included"},
+   {t:"08:15",k:"move",ti:"Meet in the lobby — metro or walk to the Thyssen",rm:"Paseo del Prado 8",pl:"thyssen",
+    note:"On foot it is a pleasant half-hour down the Gran Vía and along the Paseo del Prado — a UNESCO World Heritage boulevard since 2021."},
+   {t:"09:15",k:"session",ti:"Class Session 6 — Madrid as a convention destination",who:[["Ignacio Gutiérrez de Yturriaga","General Manager, Madrid Convention Bureau"]],rm:"Mirador Room",pl:"thyssen",
+    note:"The direct counterweight to Monday's Barcelona session: two Spanish cities competing for the same congresses, with different assets and different arguments."},
+   {t:"10:45",k:"meal",ti:"Coffee break"},
+   {t:"11:00",k:"session",ti:"Class Session 6 (cont.) — The Pacha deal",who:[["Javier Garcia-Polencia","CEO, Investment Banking"],["Javier Olascoaga","Senda Investment Partners"]],
+    note:"Pacha began in Sitges in 1967 and opened in Ibiza in 1973; the twin cherries became one of the few genuinely global nightlife brands. Its sale to private equity is a rare, clean case of financial buyers underwriting a party."},
+   {t:"12:30",k:"visit",ti:"Private tour of a collection at the Thyssen",pl:"thyssen"},
+   {t:"13:30",k:"meal",ti:"Lunch at the museum"},
+   {t:"15:00",k:"session",ti:"Class Session 7 — Manufacturing demand for live experience",who:[["Rocío Trujillo Alba","Regional General Manager, South Europe — Fever"],["Jorge Laso Magro","Institutional Relations Specialist — Fever"]],
+    note:"Fever was founded in Madrid in 2014 and became a unicorn by inventing the events it sells: Candlelight concerts now run in well over a hundred cities. Discovery platform on one side, production studio on the other."},
+   {t:"16:15",k:"meal",ti:"Coffee break"},
+   {t:"16:30",k:"move",ti:"Bus departs for the Santiago Bernabéu",pl:"bernabeu"},
+   {t:"17:00",k:"visit",ti:"Stadium tour with local guides",pl:"bernabeu"},
+   {t:"18:30",k:"free",ti:"End of visit — free evening",rm:"No transport booked from the stadium"}
+  ],
+  extras:{
+   hd:"Your one free evening",
+   h:"Where to go from the Bernabéu",
+   p:"You are in Chamartín with no bus home, which is a gift. Line 10 from Santiago Bernabéu runs straight into the centre in about fifteen minutes.",
+   items:[
+    ["Plaza Mayor & Mercado de San Miguel","The postcard square, and a wrought-iron market hall from 1916 now packed with counters. Touristy, delicious, and five minutes from Sol.","Plaza Mayor, Madrid"],
+    ["Sobrino de Botín","Opened 1725 and recognised as the oldest continuously operating restaurant in the world. Roast suckling pig in a wood oven that has never gone cold. Book ahead.","Sobrino de Botin, Calle de Cuchilleros 17, Madrid"],
+    ["Azotea del Círculo de Bellas Artes","The rooftop with the best view in Madrid — Gran Vía on one side, the Prado's treeline on the other. Small entry fee, worth every cent at sunset.","Azotea Circulo de Bellas Artes, Calle de Alcala 42, Madrid"],
+    ["Salamanca, for dinner near the stadium","If you would rather not travel: the grid east of the Bernabéu is Madrid's most expensive neighbourhood and its densest concentration of good restaurants.","Barrio de Salamanca, Madrid"]
+   ]}},
+
+ {id:"thu",dow:"Thursday",num:"17",city:"madrid",label:"Madrid",
+  title:"Airports, Athletes, Platforms",
+  theme:"The final teaching day runs from airport economics to a footballer-turned-founder to the regulatory street fight over ride-hailing — and closes with wine.",
+  ev:[
+   {t:"07:00",k:"meal",ti:"Breakfast in the restaurant",rm:"Included"},
+   {t:"09:00",k:"session",ti:"Class Session 8 — Airport economics: the case of Aena",who:[["Julio García Cobos","Founding Partner, PQAXIS; Adjunct Professor, IE Business School"]],rm:"Rooms 026 / 027 / 028 / 029 · at the hotel",
+    note:"Aena runs 46 Spanish airports and handles more passengers than any other operator on earth. Its 2015 partial privatisation was the largest IPO in Spanish history, and the state still holds the majority — a live experiment in regulated infrastructure with public shareholders."},
+   {t:"10:15",k:"meal",ti:"Coffee break"},
+   {t:"10:30",k:"session",ti:"Class Session 8 (cont.) — Beyond the Pitch: an entrepreneur's playbook for modern football",who:[["Esteban Granero","Co-founder, BEST 11 GROUP"]],
+    note:"Granero came through Real Madrid's academy and played in the first team, at QPR and Real Sociedad. He is better known now as one of the game's most cerebral figures — he also co-founded an AI company applying predictive models to recruitment."},
+   {t:"12:00",k:"session",ti:"Class Session 8 (cont.) — Presentation by Kaizen Play",who:[["Ignacio Aguillo","Founder and CEO, Kaizen Play"]]},
+   {t:"13:15",k:"move",ti:"Walk to Café de Oriente",pl:"oriente"},
+   {t:"13:30",k:"meal",ti:"Lunch at Café de Oriente",pl:"oriente",
+    note:"The Royal Palace is directly across the square. If there is any gap after lunch, walk the twenty metres to the railing and look."},
+   {t:"15:00",k:"session",ti:"Class Session 9 — Platforms and regulation",who:[["Felipe Fernández Aramburu","General Manager, Uber Spain"]],
+    note:"Uber launched in Barcelona in 2014 and was shut down by the courts within months. It returned to Madrid as a licensed operator, pulled out of Barcelona again in 2019 over a pre-booking rule, then came back working with taxi drivers. Spain's taxi-versus-VTC fight is the sharpest in Europe."},
+   {t:"16:15",k:"meal",ti:"Coffee break"},
+   {t:"16:30",k:"session",ti:"Class Session 9 (cont.) — Wrap-up",who:[["Prof. Martine Haas",""],["Dr. Mireia Lizandra",""]]},
+   {t:"17:45",k:"logistics",ti:"Finish wrap-up"},
+   {t:"18:30",k:"session",ti:"Wine-tasting presentation",who:[["Eduardo Ferrín","CEO, Alto Winery"]],
+    note:"Spain has more land under vine than any country on earth — and still sits behind Italy and France on volume, because so much of it is old, low-yield bush vine. That gap is the whole opportunity in Spanish wine."},
+   {t:"19:00",k:"meal",ti:"Wine tasting with tapas dinner",rm:"Partners welcome"},
+   {t:"20:30",k:"logistics",ti:"End of the programme — farewell"}
+  ]},
+
+ {id:"fri",dow:"Friday",num:"18",city:"madrid",label:"Madrid",
+  title:"Hasta Luego",
+  theme:"Breakfast, then departures. If your flight is late enough, Madrid is eminently walkable before you go.",
+  ev:[
+   {t:"07:00",k:"meal",ti:"Breakfast in the restaurant",rm:"Included"},
+   {t:"—",k:"free",ti:"Travel safely",note:"Barajas is about 30–40 minutes from Plaza de España by taxi, or line 8 of the metro from Nuevos Ministerios."}
+  ],
+  extras:{
+   hd:"If you have a few hours",
+   h:"Four things within walking distance",
+   p:"All four are a short walk or one metro stop from the hotel. Bags can usually be left at reception after checkout.",
+   items:[
+    ["Museo del Prado","Velázquez's Las Meninas, Goya's black paintings, Bosch's Garden of Earthly Delights. Two hours is enough for the greatest hits; free entry in the last two hours of the day.","Museo del Prado, Madrid"],
+    ["Parque del Retiro","The former royal pleasure garden, public since 1868. Row a boat, or find the Palacio de Cristal — an 1887 glasshouse built to show off Philippine plants.","Parque del Retiro, Madrid"],
+    ["Palacio Real & Sabatini Gardens","Ten minutes downhill from the hotel. The largest functioning royal palace in Western Europe, built after the old Alcázar burned down on Christmas Eve 1734.","Palacio Real de Madrid"],
+    ["Templo de Debod","An actual 2nd-century BC Egyptian temple, given to Spain in 1968 and rebuilt stone by stone behind your hotel. Best at sunset, and it is free.","Templo de Debod, Madrid"]
+   ]}}
+];
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const KINDS = {
+  session:{lbl:"Sessions"}, visit:{lbl:"Visits"}, meal:{lbl:"Food & Coffee"},
+  move:{lbl:"Getting There"}, free:{lbl:"Free Time"}, logistics:{lbl:"Logistics"}
+};
+const CITY_VAR = {barcelona:"var(--bcn)",penedes:"var(--pen)",madrid:"var(--mad)"};
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mapUrl = q => "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
+const mark = k => '<svg aria-hidden="true"><use href="#m-'+k+'"/></svg>';
+const mins = t => { const m=/^(\d{2}):(\d{2})$/.exec(t); return m? +m[1]*60 + +m[2] : null; };
+
+const state = { day:0, view:"day", filters:new Set(), open:new Set(), all:false };
+
+/* --- Spain-local clock --- */
+function spainNow(){
+  const p = Object.fromEntries(
+    new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Madrid",year:"numeric",month:"2-digit",
+      day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false})
+    .formatToParts(new Date()).filter(x=>x.type!=="literal").map(x=>[x.type,x.value]));
+  let h = +p.hour; if(h===24) h=0;
+  return {y:+p.year,mo:+p.month,d:+p.day,h:h,mi:+p.minute};
+}
+function liveDay(){
+  const n = spainNow();
+  if(n.y===2026 && n.mo===9 && n.d>=13 && n.d<=18) return {idx:n.d-13, mins:n.h*60+n.mi, n:n};
+  return {idx:-1, mins:null, n:n};
+}
+
+/* --- rail --- */
+function renderRail(){
+  const live = liveDay();
+  document.getElementById("rail").innerHTML = DAYS.map((d,i)=>{
+    const seg = CITY_VAR[d.city];
+    const cls = ["day"];
+    if(i===live.idx) cls.push("istoday");
+    if(d.id==="tue") cls.push("trainout");
+    if(d.id==="wed") cls.push("trainin");
+    return '<button class="'+cls.join(" ")+'" role="tab" id="tab-'+d.id+'" style="--seg:'+seg+'"'+
+      ' aria-selected="'+(i===state.day)+'" data-i="'+i+'">'+
+      '<span class="dot"></span>'+
+      '<span class="dow">'+d.dow.slice(0,3)+'</span>'+
+      '<span class="dnum">'+d.num+'</span>'+
+      '<span class="dcity">'+esc(d.label)+'</span>'+
+    '</button>';
+  }).join("");
+  const sel = document.querySelector('.day[aria-selected="true"]');
+  if(sel && sel.scrollIntoView) sel.scrollIntoView({block:"nearest",inline:"center",
+    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+}
+
+/* --- live board --- */
+function renderBoard(){
+  const live = liveDay(), b = document.getElementById("board");
+  const clock = String(live.n.h).padStart(2,"0")+":"+String(live.n.mi).padStart(2,"0");
+  let bits = ['<span class="clock"><span class="pulse"></span>'+clock+' in Spain</span>'];
+
+  if(live.idx>=0){
+    const d = DAYS[live.idx];
+    bits.push("Day "+(live.idx+1)+" of 6");
+    bits.push(esc(d.label));
+    const next = d.ev.find(e => mins(e.t)!==null && mins(e.t) > live.mins);
+    if(next){
+      const gap = mins(next.t)-live.mins;
+      const g = gap>=60 ? Math.floor(gap/60)+"h "+(gap%60)+"m" : gap+"m";
+      bits.push('<span class="nx">Next &rarr; <b>'+esc(next.ti)+'</b> at '+next.t+' &middot; in '+g+'</span>');
+    } else {
+      bits.push('<span class="nx">That is the day done.</span>');
+    }
+  } else {
+    const start = Date.UTC(2026,8,13,14,0), now = Date.now();
+    const days = Math.ceil((start-now)/86400000);
+    bits.push(days>0 ? '<span class="nx">Barcelona in <b>'+days+' day'+(days===1?"":"s")+'</b></span>'
+                     : '<span class="nx">The programme has finished &mdash; the archive stays here.</span>');
+  }
+  b.innerHTML = bits.join('<span style="color:var(--rule)">/</span>');
+}
+
+/* --- one event row --- */
+function evRow(e, d, live, isNow, isPast){
+  const cls = ["ev", e.k];
+  if(isNow) cls.push("now"); else if(isPast) cls.push("past");
+  const pl = e.pl ? P[e.pl] : null;
+  const openId = d.id+"-"+e.t+"-"+(e.pl||"");
+  const isOpen = state.all || state.open.has(openId);
+
+  let who = "";
+  if(e.who && e.who.length){
+    who = '<p class="who">'+e.who.map(w =>
+      '<b>'+esc(w[0])+'</b>'+(w[1]?' <em>&mdash; '+esc(w[1])+'</em>':'')
+    ).join('<br>')+'</p>';
+  }
+
+  let label = "";
+  if(pl){
+    label =
+      '<button class="openplace" aria-expanded="'+isOpen+'" data-open="'+esc(openId)+'">'+
+        '<span class="car">&#9654;</span>'+esc(pl.name)+
+      '</button>'+
+      (isOpen ?
+        '<div class="label">'+
+          '<div class="pmeta">'+esc(pl.era)+'<br>'+esc(pl.addr)+'</div>'+
+          '<h4>A short history</h4><p>'+esc(pl.hist)+'</p>'+
+          '<h4>Fun fact</h4><p class="fun">'+esc(pl.fun)+'</p>'+
+          '<a class="maplink" href="'+mapUrl(pl.q)+'" target="_blank" rel="noopener noreferrer">'+
+            '<svg aria-hidden="true"><use href="#m-pin"/></svg>Open in Maps</a>'+
+        '</div>' : '');
+  }
+
+  return '<li class="'+cls.join(" ")+'">'+
+    '<div class="gut"><span class="time">'+esc(e.t)+'</span>'+
+      '<span class="mark">'+mark(e.k)+'</span></div>'+
+    '<div class="bd">'+
+      (isNow?'<span class="nowtag">Happening now</span><br>':'')+
+      '<h3>'+esc(e.ti)+'</h3>'+
+      who+
+      (e.rm?'<p class="room">'+esc(e.rm)+'</p>':'')+
+      (e.note?'<p class="note">'+esc(e.note)+'</p>':'')+
+      label+
+    '</div></li>';
+}
+
+/* --- day view --- */
+function renderDay(){
+  const d = DAYS[state.day], live = liveDay();
+  const isToday = live.idx === state.day;
+  const shown = d.ev.filter(e => !state.filters.size || state.filters.has(e.k));
+
+  let nowIdx = -1;
+  if(isToday){
+    for(let i=0;i<d.ev.length;i++){
+      const m = mins(d.ev[i].t);
+      if(m!==null && m<=live.mins) nowIdx=i;
+    }
+  }
+
+  const counts = {};
+  d.ev.forEach(e => counts[e.k]=(counts[e.k]||0)+1);
+
+  const sessions = d.ev.filter(e=>e.k==="session").length;
+  const speakers = new Set();
+  d.ev.forEach(e => (e.who||[]).forEach(w => speakers.add(w[0])));
+  const clock = d.ev.map(e=>e.t).filter(t=>mins(t)!==null);
+
+  let inserted = false;
+  const rows = shown.map(e=>{
+    const i = d.ev.indexOf(e);
+    const isNow = i===nowIdx;
+    const isPast = isToday && mins(e.t)!==null && mins(e.t) < live.mins && !isNow;
+    let pre = "";
+    if(isToday && !inserted && !isNow && mins(e.t)!==null && mins(e.t) > live.mins){
+      inserted = true;
+      pre = '<li class="nowline"><span class="t">'+String(live.n.h).padStart(2,"0")+":"+String(live.n.mi).padStart(2,"0")+
+            '</span><span class="l"></span></li>';
+    }
+    return pre + evRow(e, d, live, isNow, isPast);
+  }).join("");
+
+  const chips = Object.keys(KINDS).filter(k=>counts[k]).map(k =>
+    '<button class="chip" data-k="'+k+'" aria-pressed="'+state.filters.has(k)+'">'+
+      mark(k)+KINDS[k].lbl+' <span style="opacity:.55">'+counts[k]+'</span></button>'
+  ).join("");
+
+  let extras = "";
+  if(d.extras){
+    extras = '<section class="extras">'+
+      '<div class="hd">'+esc(d.extras.hd)+'</div>'+
+      '<h3>'+esc(d.extras.h)+'</h3>'+
+      '<p>'+esc(d.extras.p)+'</p>'+
+      '<ul class="picks">'+d.extras.items.map(it =>
+        '<li><span class="pk">'+esc(it[0])+'</span><span class="ps">'+esc(it[1])+'</span>'+
+        '<a href="'+mapUrl(it[2])+'" target="_blank" rel="noopener noreferrer">Map &rarr;</a></li>'
+      ).join("")+'</ul></section>';
+  }
+
+  document.getElementById("stage").innerHTML =
+    '<div class="dayhead">'+
+      '<div class="kicker">Day '+(state.day+1)+' of 6 &nbsp;·&nbsp; '+esc(d.label)+(isToday?' &nbsp;·&nbsp; Today':'')+'</div>'+
+      '<h2>'+esc(d.dow)+' '+d.num+' &mdash; '+esc(d.title)+'</h2>'+
+      '<p class="theme">'+esc(d.theme)+'</p>'+
+      '<div class="facts">'+
+        '<div><dt>First call</dt><dd>'+(clock[0]||"—")+'</dd></div>'+
+        '<div><dt>Last item</dt><dd>'+(clock[clock.length-1]||"—")+'</dd></div>'+
+        '<div><dt>Class sessions</dt><dd>'+(sessions||"—")+'</dd></div>'+
+        '<div><dt>Speakers</dt><dd>'+(speakers.size||"—")+'</dd></div>'+
+        '<div><dt>Items</dt><dd>'+d.ev.length+'</dd></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="controls">'+chips+
+      '<span class="spacer"></span>'+
+      '<button class="plain" id="toggleAll">'+(state.all?"Collapse all places":"Expand all places")+'</button>'+
+    '</div>'+
+    '<ol class="tl">'+rows+'</ol>'+
+    extras;
+}
+
+/* --- places view --- */
+function renderPlaces(){
+  const order = ["hotelbcn","mnac","inef","circuit","campnou","vint24","gramona","sants","hotelmad","thyssen","bernabeu","oriente"];
+  const dayOf = {};
+  DAYS.forEach((d,i)=> d.ev.forEach(e => { if(e.pl && dayOf[e.pl]===undefined) dayOf[e.pl]=i; }));
+  const cityName = {barcelona:"Barcelona",penedes:"Penedès",madrid:"Madrid"};
+
+  document.getElementById("stage").innerHTML =
+    '<div class="dayhead">'+
+      '<div class="kicker">Twelve places &nbsp;·&nbsp; Barcelona &rarr; Penedès &rarr; Madrid</div>'+
+      '<h2>Places &amp; Stories</h2>'+
+      '<p class="theme">Every venue on the itinerary, in the order you meet it &mdash; what it is, why it is there, and one thing worth repeating over dinner.</p>'+
+    '</div>'+
+    '<div class="places">'+ order.map((id,i)=>{
+      const p = P[id], di = dayOf[id];
+      const d = di!==undefined ? DAYS[di] : null;
+      return '<article class="pcard" data-city="'+p.city+'">'+
+        '<div class="ptop"><span class="idx">'+String(i+1).padStart(2,"0")+'</span>'+
+        '<h3>'+esc(p.name)+'</h3></div>'+
+        '<div class="tagrow">'+
+          '<span class="tag city">'+cityName[p.city]+'</span>'+
+          (d?'<span class="tag">'+d.dow+' '+d.num+'</span>':'<span class="tag">Discussed in class</span>')+
+          '<span class="tag">'+esc(p.era)+'</span>'+
+        '</div>'+
+        '<div class="cols">'+
+          '<div><h4>A short history</h4><p>'+esc(p.hist)+'</p></div>'+
+          '<div><h4>Fun fact</h4><p class="fun">'+esc(p.fun)+'</p>'+
+          '<div class="addr">'+esc(p.addr)+'</div>'+
+          '<a class="maplink" href="'+mapUrl(p.q)+'" target="_blank" rel="noopener noreferrer">'+
+          '<svg aria-hidden="true"><use href="#m-pin"/></svg>Open in Maps</a></div>'+
+        '</div>'+
+      '</article>';
+    }).join("")+'</div>';
+}
+
+function render(){
+  const app = document.getElementById("app");
+  app.setAttribute("data-city", state.view==="places" ? "barcelona" : DAYS[state.day].city);
+  document.getElementById("v-day").setAttribute("aria-pressed", state.view==="day");
+  document.getElementById("v-places").setAttribute("aria-pressed", state.view==="places");
+  renderRail();
+  renderBoard();
+  if(state.view==="places") renderPlaces(); else renderDay();
+}
+
+/* --- events --- */
+document.addEventListener("click", ev => {
+  const tab = ev.target.closest(".day");
+  if(tab){ state.day = +tab.dataset.i; state.view="day"; state.open.clear(); state.all=false;
+           location.hash = DAYS[state.day].id; render(); return; }
+
+  const chip = ev.target.closest(".chip");
+  if(chip){ const k=chip.dataset.k;
+            state.filters.has(k) ? state.filters.delete(k) : state.filters.add(k);
+            renderDay(); return; }
+
+  const op = ev.target.closest("[data-open]");
+  if(op){ const id=op.dataset.open;
+          state.open.has(id) ? state.open.delete(id) : state.open.add(id);
+          renderDay(); return; }
+
+  if(ev.target.closest("#toggleAll")){ state.all=!state.all; state.open.clear(); renderDay(); return; }
+  if(ev.target.closest("#v-day")){ state.view="day"; render(); return; }
+  if(ev.target.closest("#v-places")){ state.view="places"; location.hash="places"; render(); return; }
+});
+
+document.addEventListener("keydown", ev => {
+  if(ev.metaKey||ev.ctrlKey||ev.altKey) return;
+  if(/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName||"")) return;
+  if(ev.key==="ArrowRight" && state.view==="day" && state.day<DAYS.length-1){
+    state.day++; state.open.clear(); location.hash=DAYS[state.day].id; render(); ev.preventDefault();
+  }
+  if(ev.key==="ArrowLeft" && state.view==="day" && state.day>0){
+    state.day--; state.open.clear(); location.hash=DAYS[state.day].id; render(); ev.preventDefault();
+  }
+});
+
+function fromHash(){
+  const h = (location.hash||"").replace("#","");
+  if(h==="places"){ state.view="places"; return true; }
+  const i = DAYS.findIndex(d=>d.id===h);
+  if(i>=0){ state.day=i; state.view="day"; return true; }
+  return false;
+}
+window.addEventListener("hashchange", ()=>{ if(fromHash()) render(); });
+
+/* boot */
+if(!fromHash()){
+  const live = liveDay();
+  state.day = live.idx >= 0 ? live.idx : 0;
+}
+render();
+setInterval(()=>{ renderBoard(); if(state.view==="day" && liveDay().idx===state.day) renderDay(); }, 60000);
+</script>
