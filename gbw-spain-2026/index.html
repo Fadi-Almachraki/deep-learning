@@ -216,6 +216,13 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   padding:10px 16px;color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px;
 }
 .switch button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--accent);}
+.switch .gap{flex:1 1 auto;}
+.switch .prt{
+  display:inline-flex;align-items:center;gap:7px;color:var(--ink-3);
+  border-bottom-color:transparent;
+}
+.switch .prt:hover{color:var(--accent);}
+.switch .prt svg{width:11px;height:11px;}
 
 /* ========== day head ========== */
 .dayhead{padding-block:34px 0;}
@@ -332,7 +339,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   font-family:var(--f-mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
   color:var(--accent);
 }
-.openplace .car{display:inline-block;transition:transform .2s ease;font-size:9px;}
+.openplace .car{display:inline-flex;transition:transform .2s ease;}
+.openplace .car svg{width:8px;height:8px;}
 .openplace[aria-expanded="true"] .car{transform:rotate(90deg);}
 .label{
   margin-top:14px;max-width:var(--col);
@@ -468,11 +476,43 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   *{animation-duration:.001ms !important;transition-duration:.001ms !important;}
 }
 
+#printdoc{display:none;}
+.pday{break-before:page;padding-top:4mm;}
+.pday:first-child{break-before:auto;}
+.pday .dayhead{padding-top:0;}
+.pday .tl{margin-top:16px;}
+.psec{break-before:page;padding-top:4mm;}
+.psec > h2{
+  font-family:var(--f-display);font-variation-settings:"wdth" 108,"wght" 720;
+  font-size:30px;line-height:1;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:16px;
+}
+
 @media print{
-  .railwrap,.switch,.controls,.board{display:none !important;}
-  .label{display:block !important;}
-  body{font-size:11pt;}
+  :root{
+    --paper:#FFFFFF;--sunk:#F2F3EF;--raise:#FFFFFF;--rule:#C9CBC4;--rule-soft:#DEDFD9;
+    --ink:#101214;--ink-2:#41474B;--ink-3:#6E757A;
+    --bcn:#00595B;--pen:#75590F;--mad:#94132A;
+  }
+  @page{margin:14mm 13mm 12mm;}
+  html,body{background:#fff !important;}
+  .railwrap,.switch,.controls,.board,#stage,.colophon{display:none !important;}
+  #printdoc{display:block !important;}
+  .wrap{max-width:none;padding-inline:0;padding-block:0;}
+  body{font-size:10.4pt;line-height:1.5;}
+  .mast{padding-block:0 18px;}
+  .mast h1{font-size:46px;}
+  .deck{font-size:12.2pt;}
+  .label,.pcard,.ev,.picks li,.nblock{break-inside:avoid;}
   .ev.past{opacity:1;}
+  #printdoc .label{display:none !important;}
+  #printdoc .openplace{color:var(--ink-3);margin-top:7px;}
+  #printdoc .openplace .car{display:none;}
+  #printdoc .openplace::before{content:"Location — ";letter-spacing:.09em;}
+  .maplink{border:0;padding:0;color:var(--ink-3);}
+  .maplink svg{display:none;}
+  .pcard .cols{gap:16px 28px;}
+  .notes{break-before:page;padding-top:4mm;border-top:1px solid var(--ink);}
+  a{text-decoration:none;}
 }
 </style>
 
@@ -483,6 +523,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <symbol id="m-move" viewBox="0 0 10 10"><path d="M2.5 1 7 5l-4.5 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="m-free" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.4" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
   <symbol id="m-logistics" viewBox="0 0 10 10"><rect x="1" y="4.2" width="8" height="1.6" fill="currentColor"/></symbol>
+  <symbol id="m-car" viewBox="0 0 10 10"><path d="M3.2 1.4 7 5l-3.8 3.6Z" fill="currentColor"/></symbol>
+  <symbol id="m-print" viewBox="0 0 12 12"><path d="M3.5 4.2V1.1h5v3.1M3.5 8.4H2.1V4.6h7.8v3.8H8.5M3.5 7.1h5v3.8h-5Z" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></symbol>
   <symbol id="m-pin" viewBox="0 0 12 12"><path d="M6 .9c-2 0-3.6 1.6-3.6 3.6C2.4 7.3 6 11.1 6 11.1S9.6 7.3 9.6 4.5C9.6 2.5 8 .9 6 .9Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="4.4" r="1.2" fill="currentColor"/></symbol>
 </svg>
 
@@ -513,7 +555,13 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <div class="switch" role="group" aria-label="View">
     <button id="v-day" aria-pressed="true">Itinerary</button>
     <button id="v-places" aria-pressed="false">Places &amp; Stories</button>
+    <span class="gap"></span>
+    <button id="v-print" class="prt" title="Print the whole week, or save it as a PDF">
+      <svg aria-hidden="true"><use href="#m-print"/></svg>Print / PDF
+    </button>
   </div>
+
+  <div id="printdoc" aria-hidden="true"></div>
 
   <main id="stage"></main>
 
@@ -926,7 +974,7 @@ function evRow(e, d, live, isNow, isPast){
   if(pl){
     label =
       '<button class="openplace" aria-expanded="'+isOpen+'" data-open="'+esc(openId)+'">'+
-        '<span class="car">&#9654;</span>'+esc(pl.name)+
+        '<span class="car"><svg aria-hidden=\"true\"><use href=\"#m-car\"/></svg></span>'+esc(pl.name)+
       '</button>'+
       (isOpen ?
         '<div class="label">'+
@@ -1060,6 +1108,58 @@ function renderPlaces(){
     }).join("")+'</div>';
 }
 
+/* --- the printable whole-week document (hidden on screen) --- */
+function renderPrintDoc(){
+  const wasAll = state.all; state.all = true;
+
+  const days = DAYS.map((d,i) => {
+    const sessions = d.ev.filter(e=>e.k==="session").length;
+    const speakers = new Set(); d.ev.forEach(e=>(e.who||[]).forEach(w=>speakers.add(w[0])));
+    const clock = d.ev.map(e=>e.t).filter(t=>mins(t)!==null);
+    let extras = "";
+    if(d.extras){
+      extras = '<section class="extras"><div class="hd">'+esc(d.extras.hd)+'</div>'+
+        '<h3>'+esc(d.extras.h)+'</h3><p>'+esc(d.extras.p)+'</p><ul class="picks">'+
+        d.extras.items.map(it=>'<li><span class="pk">'+esc(it[0])+'</span>'+
+          '<span class="ps">'+esc(it[1])+'</span><a href="'+mapUrl(it[2])+'">Map</a></li>').join("")+
+        '</ul></section>';
+    }
+    return '<section class="pday" data-city="'+d.city+'">'+
+      '<div class="dayhead">'+
+        '<div class="kicker">Day '+(i+1)+' of 6 &nbsp;·&nbsp; '+esc(d.label)+'</div>'+
+        '<h2>'+esc(d.dow)+' '+d.num+' &mdash; '+esc(d.title)+'</h2>'+
+        '<p class="theme">'+esc(d.theme)+'</p>'+
+        '<div class="facts">'+
+          '<div><dt>First call</dt><dd>'+(clock[0]||"—")+'</dd></div>'+
+          '<div><dt>Last item</dt><dd>'+(clock[clock.length-1]||"—")+'</dd></div>'+
+          '<div><dt>Class sessions</dt><dd>'+(sessions||"—")+'</dd></div>'+
+          '<div><dt>Speakers</dt><dd>'+(speakers.size||"—")+'</dd></div>'+
+          '<div><dt>Items</dt><dd>'+d.ev.length+'</dd></div>'+
+        '</div></div>'+
+      '<ol class="tl">'+d.ev.map(e=>evRow(e,d,null,false,false)).join("")+'</ol>'+
+      extras+'</section>';
+  }).join("");
+
+  const order = ["hotelbcn","mnac","inef","circuit","campnou","vint24","gramona","sants","hotelmad","thyssen","bernabeu","oriente"];
+  const dayOf = {}; DAYS.forEach((d,i)=>d.ev.forEach(e=>{ if(e.pl && dayOf[e.pl]===undefined) dayOf[e.pl]=i; }));
+  const cityName = {barcelona:"Barcelona",penedes:"Penedès",madrid:"Madrid"};
+  const places = '<section class="psec" data-city="madrid"><h2>Places &amp; Stories</h2>'+
+    '<div class="places">'+order.map((id,i)=>{
+      const p=P[id], d=dayOf[id]!==undefined?DAYS[dayOf[id]]:null;
+      return '<article class="pcard" data-city="'+p.city+'">'+
+        '<div class="ptop"><span class="idx">'+String(i+1).padStart(2,"0")+'</span><h3>'+esc(p.name)+'</h3></div>'+
+        '<div class="tagrow"><span class="tag city">'+cityName[p.city]+'</span>'+
+          (d?'<span class="tag">'+d.dow+' '+d.num+'</span>':'<span class="tag">Discussed in class</span>')+
+          '<span class="tag">'+esc(p.era)+'</span></div>'+
+        '<div class="cols"><div><h4>A short history</h4><p>'+esc(p.hist)+'</p></div>'+
+        '<div><h4>Fun fact</h4><p class="fun">'+esc(p.fun)+'</p>'+
+        '<div class="addr">'+esc(p.addr)+'</div></div></div></article>';
+    }).join("")+'</div></section>';
+
+  document.getElementById("printdoc").innerHTML = days + places;
+  state.all = wasAll;
+}
+
 function render(){
   const app = document.getElementById("app");
   app.setAttribute("data-city", state.view==="places" ? "barcelona" : DAYS[state.day].city);
@@ -1089,6 +1189,7 @@ document.addEventListener("click", ev => {
   if(ev.target.closest("#toggleAll")){ state.all=!state.all; state.open.clear(); renderDay(); return; }
   if(ev.target.closest("#v-day")){ state.view="day"; render(); return; }
   if(ev.target.closest("#v-places")){ state.view="places"; location.hash="places"; render(); return; }
+  if(ev.target.closest("#v-print")){ window.print(); return; }
 });
 
 document.addEventListener("keydown", ev => {
@@ -1117,5 +1218,6 @@ if(!fromHash()){
   state.day = live.idx >= 0 ? live.idx : 0;
 }
 render();
+renderPrintDoc();
 setInterval(()=>{ renderBoard(); if(state.view==="day" && liveDay().idx===state.day) renderDay(); }, 60000);
 </script>
